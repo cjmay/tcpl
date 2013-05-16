@@ -36,7 +36,9 @@ public class SocialNetwork {
             Scanner lineScanner = new Scanner(line);
             String from = lineScanner.next();
             String to = lineScanner.next();
-            network.add(new Connection(from, to));
+            int count = lineScanner.nextInt();
+            if (count > 25)
+                network.add(new Connection(from, to));
         }
 
         network.visualize();
