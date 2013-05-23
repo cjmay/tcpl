@@ -31,7 +31,7 @@ public class SocialNetwork {
     public static void main(String[] args) throws IOException {
         SocialNetwork network = new SocialNetwork();
 
-        File file = new File(args[0]);
+        File file = new File("user_edges.graph");
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(new FileInputStream(file), "UTF-8"));
         String line;
