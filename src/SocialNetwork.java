@@ -48,7 +48,7 @@ public class SocialNetwork {
         }
         reader.close();
 
-        network.visualize();
+        network.visualize(0.75, 0.75, 700);
     }
 
     /**
@@ -74,17 +74,32 @@ public class SocialNetwork {
     public int getNumConnections() { return connections.size(); }
 
     /**
-     * Visualize social network in simple interactive Swing window.
+     * Visualize social network in simple interactive Swing window
+     * with default layout parameters.
      */
     public void visualize() {
+    	visualize(0.75, 0.75, 700);
+    }
+    
+    /**
+     * Visualize social network in simple interactive Swing window.
+     * @param attractionMultiplier factor by which nodes are attracted to
+     *                             one another
+     * @param repulsionMultiplier factor by which nodes are repulsed by
+     *                            one another
+     * @param maxIterations number of iterations for which the layout
+     *                      algorithm will run
+     */
+    public void visualize(double attractionMultiplier, double repulsionMultiplier,
+    		int maxIterations) {
         UndirectedGraph<String, Connection> graph = makeGraph();
 
         // Set up layout algorithm
         FRLayout<String, Connection> layout =
             new FRLayout<String, Connection>(graph);
-        layout.setAttractionMultiplier(0.75);
-        layout.setRepulsionMultiplier(0.75);
-        layout.setMaxIterations(1000);
+        layout.setAttractionMultiplier(attractionMultiplier);
+        layout.setRepulsionMultiplier(repulsionMultiplier);
+        layout.setMaxIterations(maxIterations);
         // Set dimensions of box in which graph will be laid out, can be
         // smaller or larger than actual window size
         layout.setSize(new Dimension(1024,768));
