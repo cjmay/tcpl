@@ -5,17 +5,18 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Scanner;
 
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
 import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.swing.JFrame;
-import java.awt.Font;
 
 import org.apache.commons.collections15.Transformer;
 
-import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
@@ -30,13 +31,15 @@ public class SocialNetwork {
     public static void main(String[] args) throws IOException {
         SocialNetwork network = new SocialNetwork();
 
-        Scanner scanner = new Scanner(new File(args[0]));
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            Scanner lineScanner = new Scanner(line);
-            String from = lineScanner.next();
-            String to = lineScanner.next();
-            int count = lineScanner.nextInt();
+        File file = new File(args[0]);
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(new FileInputStream(file), "UTF-8"));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String pieces[] = line.split("\\s+");
+            String from = pieces[0];
+            String to = pieces[1];
+            int count = Integer.parseInt(pieces[2]);
             if (count > 25)
                 network.add(new Connection(from, to));
         }
@@ -62,38 +65,30 @@ public class SocialNetwork {
         UndirectedGraph<String, Connection> graph = makeGraph();
 
         Layout<String, Connection> layout =
-            new ISOMLayout<String, Connection>(graph);
-        layout.setSize(new Dimension(1000,700));
+            new FRLayout<String, Connection>(graph);
+        layout.setSize(new Dimension(950,700));
 
         BasicVisualizationServer<String, Connection> server =
             new BasicVisualizationServer<String, Connection>(layout);
         server.setPreferredSize(new Dimension(1024,768));
         server.getRenderContext().setVertexLabelTransformer(
             new ToStringLabeller<String>());
-        server.getRenderer().getVertexLabelRenderer().setPosition(
-            Position.CNTR);
-        server.getRenderContext().setVertexShapeTransformer(
-            new Transformer<String,Shape>() {
-                @Override
-                public Shape transform(String s){
-                    return new Ellipse2D.Double(-40, -10, 80, 20);
-                }
-            });
-        server.getRenderContext().setVertexFontTransformer(
-            new Transformer<String, Font>(){
-                @Override
-                public Font transform(String arg0) {
-                    Font font = new Font("Arial Unicode MS", Font.PLAIN, 11);
-                    return font;
-                }
-            });
-        server.getRenderContext().setVertexFillPaintTransformer(
-            new Transformer<String,Paint>() {
-                @Override
-                public Paint transform(String s) {
-                    return Color.GREEN;
-                }
-            });
+        //server.getRenderer().getVertexLabelRenderer().setPosition(
+        //    Position.CNTR);
+        //server.getRenderContext().setVertexShapeTransformer(
+        //    new Transformer<String,Shape>() {
+        //        @Override
+        //        public Shape transform(String s){
+        //            return new Ellipse2D.Double(-40, -10, 80, 20);
+        //        }
+        //    });
+        //server.getRenderContext().setVertexFillPaintTransformer(
+        //    new Transformer<String,Paint>() {
+        //        @Override
+        //        public Paint transform(String s) {
+        //            return Color.GREEN;
+        //        }
+        //    });
 
         JFrame frame = new JFrame("Social Network");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
