@@ -17,10 +17,10 @@ import javax.swing.JFrame;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
@@ -28,6 +28,11 @@ public class SocialNetwork {
     private Set<Connection> connections;
     private Set<String> nodes;
 
+    /**
+     * Load social network from file and visualize.
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         SocialNetwork network = new SocialNetwork();
 
@@ -43,15 +48,24 @@ public class SocialNetwork {
             if (count > 25)
                 network.add(new Connection(from, to));
         }
+        reader.close();
 
         network.visualize();
     }
 
+    /**
+     * Initialize new, empty social network.
+     */
     public SocialNetwork() {
         connections = new HashSet<Connection>();
         nodes = new HashSet<String>();
     }
 
+    /**
+     * Add connection to social network (nodes of connection can be existing
+     * or new).
+     * @param connection
+     */
     public void add(Connection connection) {
         connections.add(connection);
         nodes.add(connection.getFrom());
@@ -61,38 +75,59 @@ public class SocialNetwork {
     public int getNumNodes() { return nodes.size(); }
     public int getNumConnections() { return connections.size(); }
 
+    /**
+     * Visualize social network in simple interactive Swing window.
+     */
     public void visualize() {
         UndirectedGraph<String, Connection> graph = makeGraph();
 
-        Layout<String, Connection> layout =
+        // Set up layout algorithm
+        FRLayout<String, Connection> layout =
             new FRLayout<String, Connection>(graph);
-        layout.setSize(new Dimension(950,700));
+        layout.setAttractionMultiplier(0.75);
+        layout.setRepulsionMultiplier(0.75);
+        layout.setMaxIterations(1000);
+        // Set dimensions of box in which graph will be laid out, can be
+        // smaller or larger than actual window size
+        layout.setSize(new Dimension(1024,768));
 
-        BasicVisualizationServer<String, Connection> server =
-            new BasicVisualizationServer<String, Connection>(layout);
-        server.setPreferredSize(new Dimension(1024,768));
-        server.getRenderContext().setVertexLabelTransformer(
+        // Create interactive viewer and set window size
+        VisualizationViewer<String, Connection> vv =
+            new VisualizationViewer<String, Connection>(layout);
+        vv.setPreferredSize(new Dimension(1024,768));
+        // Label vertices using their toString method
+        vv.getRenderContext().setVertexLabelTransformer(
             new ToStringLabeller<String>());
-        //server.getRenderer().getVertexLabelRenderer().setPosition(
-        //    Position.CNTR);
-        //server.getRenderContext().setVertexShapeTransformer(
-        //    new Transformer<String,Shape>() {
-        //        @Override
-        //        public Shape transform(String s){
-        //            return new Ellipse2D.Double(-40, -10, 80, 20);
-        //        }
-        //    });
-        //server.getRenderContext().setVertexFillPaintTransformer(
-        //    new Transformer<String,Paint>() {
-        //        @Override
-        //        public Paint transform(String s) {
-        //            return Color.GREEN;
-        //        }
-        //    });
+        // Put vertex labels east (right) of vertices
+        vv.getRenderer().getVertexLabelRenderer().setPosition(
+            Position.E);
+        // Make vertex shape a small circle
+        vv.getRenderContext().setVertexShapeTransformer(
+            new Transformer<String,Shape>() {
+                @Override
+                public Shape transform(String s){
+                    return new Ellipse2D.Double(-5, -5, 10, 10);
+                }
+            });
+        // Color edges gray to more easily see vertex labels
+        vv.getRenderContext().setEdgeDrawPaintTransformer(
+            new Transformer<Connection,Paint>() {
+                @Override
+                public Paint transform(Connection s) {
+                    return Color.GRAY;
+                }
+            });
+        
+        // Use default interactive mouse behavior
+        DefaultModalGraphMouse<String, Connection> gm = 
+        		new DefaultModalGraphMouse<String, Connection>();
+        gm.setMode(DefaultModalGraphMouse.Mode.TRANSFORMING);
+        vv.setGraphMouse(gm);
 
+        // Create containing frame and visualize!
         JFrame frame = new JFrame("Social Network");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(server);
+        frame.getContentPane().add(vv);
         frame.pack();
         frame.setVisible(true);
     }
@@ -102,6 +137,10 @@ public class SocialNetwork {
         return makeGraph().toString();
     }
 
+    /**
+     * Make UndirectedGraph from social network and return it.
+     * @return
+     */
     private UndirectedGraph<String, Connection> makeGraph() {
         UndirectedGraph<String, Connection> graph = 
             new UndirectedSparseGraph<String, Connection>();
