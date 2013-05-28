@@ -11,6 +11,22 @@ NON_WORD_RE = re.compile(r'([^\w]|_)+')
 BAD_WORD_TEMPLATE = '_CENSORED_%d_'
 
 
+class Tweet(object):
+    def __init__(self, name_cleaner, j):
+        self.username = name_cleaner.clean_name(j['user']['screen_name'])
+        self.hashtags = set(
+                [name_cleaner.clean_name(hashtag_dict['text'].lower())
+                for hashtag_dict in j['entities']['hashtags']]
+            )
+
+    def username_generator(self):
+        yield self.username
+
+    def hashtag_generator(self):
+        for hashtag in self.hashtags:
+            yield hashtag
+
+
 class NameCleaner(object):
     def __init__(self, profanity_filename):
         self.profane_words_map = dict()
@@ -49,6 +65,15 @@ def update_counts_2d(counts_dict, key1, key2):
         counts_dict[key1] = {key2: 1}
 
 
+def make_category_item_counts(tweets, category_generator, item_generator):
+    category_item_counts = dict()
+    for tweet in tweets:
+        for category in category_generator(tweet):
+            for item in item_generator(tweet):
+                update_counts_2d(category_item_counts, category, item)
+    return category_item_counts
+
+
 def count_undirected_pairs(category_item_counts):
     pair_counts = dict()
     for (category, item_counts) in category_item_counts.items():
@@ -64,6 +89,16 @@ def count_undirected_pairs(category_item_counts):
     return pair_counts
 
 
+def tweet_generator(profanity_filename, *tweet_filenames):
+    name_cleaner = NameCleaner(profanity_filename)
+    for tweet_filename in tweet_filenames:
+        with codecs.open(tweet_filename, encoding='utf-8') as in_f:
+            for line in in_f:
+                j = json.loads(line)
+                if 'user' in j:
+                    yield Tweet(name_cleaner, j)
+
+
 def write_graph(filename, edge_counts):
     with codecs.open(filename, encoding='utf-8', mode='w') as f:
         for (edge, count) in edge_counts.items():
@@ -71,30 +106,17 @@ def write_graph(filename, edge_counts):
 
 
 def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
-        user_edge_out_filename, in_filename):
-    hashtag_name_cleaner = NameCleaner(profanity_filename)
-    user_name_cleaner = NameCleaner(profanity_filename)
-
-    hashtag_user_counts = dict()
-    user_hashtag_counts = dict()
-
-    with codecs.open(in_filename, encoding='utf-8') as in_f:
-        for line in in_f:
-            j = json.loads(line)
-            if 'user' in j:
-                username = user_name_cleaner.clean_name(
-                    j['user']['screen_name'])
-                for hashtag_dict in j['entities']['hashtags']:
-                    hashtag = hashtag_name_cleaner.clean_name(
-                        hashtag_dict['text'].lower())
-                    update_counts_2d(hashtag_user_counts, hashtag, username)
-                    update_counts_2d(user_hashtag_counts, username, hashtag)
-
-    hashtag_edge_counts = count_undirected_pairs(hashtag_user_counts)
-    user_edge_counts = count_undirected_pairs(user_hashtag_counts)
-
-    write_graph(hashtag_edge_out_filename, hashtag_edge_counts)
-    write_graph(user_edge_out_filename, user_edge_counts)
+        user_edge_out_filename, *in_filenames):
+    write_graph(user_edge_out_filename,
+        count_undirected_pairs(make_category_item_counts(
+            tweet_generator(profanity_filename, *in_filenames),
+            category_generator=Tweet.username_generator,
+            item_generator=Tweet.hashtag_generator)))
+    write_graph(hashtag_edge_out_filename,
+        count_undirected_pairs(make_category_item_counts(
+            tweet_generator(profanity_filename, *in_filenames),
+            category_generator=Tweet.hashtag_generator,
+            item_generator=Tweet.username_generator)))
 
 
 if __name__ == '__main__':
