@@ -105,6 +105,20 @@ def write_graph(filename, edge_counts):
             f.write(u'%s\t%s\t%d\n' % (edge[0], edge[1], count))
 
 
+def make_hashtag_per_tweet_graph(profanity_filename,
+        hashtag_per_tweet_edge_out_filename, *in_filenames):
+    write_graph(hashtag_per_tweet_edge_out_filename, count_undirected_pairs(
+        dict([
+            (
+                tweet,
+                dict([
+                    (hashtag, 1) for hashtag in tweet.hashtag_generator()
+                ])
+            )
+            for tweet in tweet_generator(profanity_filename, *in_filenames)
+        ])))
+
+
 def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
         user_edge_out_filename, *in_filenames):
     write_graph(user_edge_out_filename,
