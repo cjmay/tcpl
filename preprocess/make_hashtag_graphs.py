@@ -99,4 +99,9 @@ def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
 
 if __name__ == '__main__':
     import sys
-    make_hashtag_graphs(*sys.argv[1:])
+    if len(sys.argv) == 2 and sys.argv[1] == '--test':
+        print 'Testing...'
+        import doctest
+        doctest.testmod()
+    else:
+        make_hashtag_graphs(*sys.argv[1:])
