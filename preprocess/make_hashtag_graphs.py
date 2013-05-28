@@ -8,7 +8,7 @@ import re
 
 WHITESPACE_RE = re.compile(r'\s+')
 NON_WORD_RE = re.compile(r'([^\w]|_)+')
-BAD_WORD_TEMPLATE = '_FILTERED_%d_'
+BAD_WORD_TEMPLATE = '_CENSORED_%d_'
 
 
 class NameCleaner(object):
@@ -70,8 +70,8 @@ def write_graph(filename, edge_counts):
             f.write(u'%s\t%s\t%d\n' % (edge[0], edge[1], count))
 
 
-def main(profanity_filename, in_filename, hashtag_edge_out_filename,
-        user_edge_out_filename):
+def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
+        user_edge_out_filename, in_filename):
     hashtag_name_cleaner = NameCleaner(profanity_filename)
     user_name_cleaner = NameCleaner(profanity_filename)
 
@@ -99,4 +99,4 @@ def main(profanity_filename, in_filename, hashtag_edge_out_filename,
 
 if __name__ == '__main__':
     import sys
-    main(*sys.argv[1:])
+    make_hashtag_graphs(*sys.argv[1:])
