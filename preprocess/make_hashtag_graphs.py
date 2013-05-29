@@ -11,6 +11,7 @@ NON_WORD_RE = re.compile(r'([^\w]|_)+')
 BAD_WORD_TEMPLATE = '_CENSORED_%d_'
 
 TWEET_PRINT_INTERVAL = 10000
+EDGE_PRINT_INTERVAL = 100000
 
 
 class Tweet(object):
@@ -108,9 +109,15 @@ def tweet_generator(profanity_filename, *tweet_filenames):
 
 
 def write_graph(filename, edge_counts):
+    print 'Writing edges to %s...' % filename
+    i = 0
     with codecs.open(filename, encoding='utf-8', mode='w') as f:
         for (edge, count) in edge_counts.items():
+            if i % EDGE_PRINT_INTERVAL == 0:
+                print 'Writing edge %d...' % i
             f.write(u'%s\t%s\t%d\n' % (edge[0], edge[1], count))
+            i += 1
+    print 'Wrote %d edges to %s' % (i, filename)
 
 
 def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
