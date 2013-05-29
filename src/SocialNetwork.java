@@ -42,11 +42,11 @@ public class SocialNetwork {
 		GraphFileScanner scanner = new GraphFileScanner(file);
 		while (scanner.hasNextLine()) {
 			List<String> line = scanner.nextLine();
-            String from = line.get(0);
-            String to = line.get(1);
+            Node from = new Node(line.get(0));
+            Node to = new Node(line.get(1));
             int count = Integer.parseInt(line.get(2));
             if (count > 25)
-                network.add(new Connection(from, to));
+                network.add(new Edge(from, to));
 		}
 
 		network.visualize(0.75, 0.75, 100);
