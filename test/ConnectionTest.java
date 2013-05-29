@@ -2,9 +2,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ConnectionTest {
-	private static final String PERSON1 = "Kernighan";
-	private static final String PERSON2 = "Ritchie";
-	private static final String PERSON3 = "Stallman";
+	private static final User PERSON1 = new User("Kernighan");
+	private static final User PERSON2 = new User("Ritchie");
+	private static final User PERSON3 = new User("Stallman");
 
 	@Test
 	public void testNodeGetters() {

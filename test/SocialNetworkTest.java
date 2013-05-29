@@ -2,9 +2,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SocialNetworkTest {
-	private final static String PERSON1 = "Kernighan";
-	private final static String PERSON2 = "Ritchie";
-	private final static String PERSON3 = "Stallman";
+	private final static User PERSON1 = new User("Kernighan");
+	private final static User PERSON2 = new User("Ritchie");
+	private final static User PERSON3 = new User("Stallman");
 
 	@Test
 	public void testSizeGettersEmpty() {

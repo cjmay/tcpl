@@ -1,12 +1,12 @@
 public class Connection {
-	private final String from, to;
+	private final User from, to;
 
 	/**
 	 * Create a new connection from one user to another.
 	 * @param from user from which this connection originates
 	 * @param to user to which this connection goes
 	 */
-	public Connection(String from, String to) {
+	public Connection(User from, User to) {
 		this.from = from;
 		this.to = to;
 	}
@@ -14,20 +14,20 @@ public class Connection {
 	/**
 	 * Return user from which this connection originates.
 	 */
-	public String getFrom() {
+	public User getFrom() {
 		return from;
 	}
 
 	/**
 	 * Return user to which this connection goes.
 	 */
-	public String getTo() {
+	public User getTo() {
 		return to;
 	}
 
 	@Override
 	public String toString() {
-		return getFrom() + "->" + getTo();
+		return getFrom().toString() + "->" + getTo().toString();
 	}
 
 	/**

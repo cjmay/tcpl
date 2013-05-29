@@ -23,7 +23,7 @@ import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class SocialNetwork {
 	private Set<Connection> connections;
-	private Set<String> nodes;
+	private Set<User> nodes;
 
 	/**
 	 * Load social network from file and visualize.
@@ -43,7 +43,7 @@ public class SocialNetwork {
 	 */
 	public SocialNetwork() {
 		connections = new HashSet<Connection>();
-		nodes = new HashSet<String>();
+		nodes = new HashSet<User>();
 	}
 
 	/**
@@ -79,11 +79,11 @@ public class SocialNetwork {
 	 */
 	public void visualize(double attractionMultiplier,
 			double repulsionMultiplier, int maxIterations) {
-		UndirectedGraph<String, Connection> graph = makeGraph();
+		UndirectedGraph<User, Connection> graph = makeGraph();
 
 		// Set up layout algorithm
-		FRLayout<String, Connection> layout =
-			new FRLayout<String, Connection>(graph);
+		FRLayout<User, Connection> layout =
+			new FRLayout<User, Connection>(graph);
 		layout.setAttractionMultiplier(attractionMultiplier);
 		layout.setRepulsionMultiplier(repulsionMultiplier);
 		layout.setMaxIterations(maxIterations);
@@ -92,20 +92,20 @@ public class SocialNetwork {
 		layout.setSize(new Dimension(1024,768));
 
 		// Create interactive viewer and set window size
-		VisualizationViewer<String, Connection> vv =
-			new VisualizationViewer<String, Connection>(layout);
+		VisualizationViewer<User, Connection> vv =
+			new VisualizationViewer<User, Connection>(layout);
 		vv.setPreferredSize(new Dimension(1024,768));
 		// Label vertices using their toString method
 		vv.getRenderContext().setVertexLabelTransformer(
-			new ToStringLabeller<String>());
+			new ToStringLabeller<User>());
 		// Put vertex labels east (right) of vertices
 		vv.getRenderer().getVertexLabelRenderer().setPosition(
 			Position.E);
 		// Make vertex shape a small circle
 		vv.getRenderContext().setVertexShapeTransformer(
-			new Transformer<String,Shape>() {
+			new Transformer<User,Shape>() {
 				@Override
-				public Shape transform(String s){
+				public Shape transform(User s){
 					return new Ellipse2D.Double(-5, -5, 10, 10);
 				}
 			});
@@ -119,8 +119,8 @@ public class SocialNetwork {
 			});
 		
 		// Use default interactive mouse behavior
-		DefaultModalGraphMouse<String, Connection> gm = 
-				new DefaultModalGraphMouse<String, Connection>();
+		DefaultModalGraphMouse<User, Connection> gm = 
+				new DefaultModalGraphMouse<User, Connection>();
 		gm.setMode(DefaultModalGraphMouse.Mode.TRANSFORMING);
 		vv.setGraphMouse(gm);
 
@@ -141,10 +141,10 @@ public class SocialNetwork {
 	 * Make UndirectedGraph from social network and return it.
 	 * @return
 	 */
-	private UndirectedGraph<String, Connection> makeGraph() {
-		UndirectedGraph<String, Connection> graph = 
-			new UndirectedSparseGraph<String, Connection>();
-		for (String node : nodes) {
+	private UndirectedGraph<User, Connection> makeGraph() {
+		UndirectedGraph<User, Connection> graph = 
+			new UndirectedSparseGraph<User, Connection>();
+		for (User node : nodes) {
 			graph.addVertex(node);
 		}
 		for (Connection connection : connections) {
