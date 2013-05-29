@@ -26,8 +26,8 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class SocialNetwork {
-	private Set<Connection> connections;
-	private Set<String> nodes;
+	private Set<Edge> edges;
+	private Set<Node> nodes;
 
 	/**
 	 * Load social network from file and visualize.
@@ -56,23 +56,23 @@ public class SocialNetwork {
 	 * Initialize new, empty social network.
 	 */
 	public SocialNetwork() {
-		connections = new HashSet<Connection>();
-		nodes = new HashSet<String>();
+		edges = new HashSet<Edge>();
+		nodes = new HashSet<Node>();
 	}
 
 	/**
-	 * Add connection to social network (nodes of connection can be existing
+	 * Add edge to social network (nodes of edge can be existing
 	 * or new).
-	 * @param connection
+	 * @param edge
 	 */
-	public void add(Connection connection) {
-		connections.add(connection);
-		nodes.add(connection.getFrom());
-		nodes.add(connection.getTo());
+	public void add(Edge edge) {
+		edges.add(edge);
+		nodes.add(edge.getFrom());
+		nodes.add(edge.getTo());
 	}
 
 	public int getNumNodes() { return nodes.size(); }
-	public int getNumConnections() { return connections.size(); }
+	public int getNumEdges() { return edges.size(); }
 
 	/**
 	 * Visualize social network in simple interactive Swing window
@@ -93,11 +93,11 @@ public class SocialNetwork {
 	 */
 	public void visualize(double attractionMultiplier,
 			double repulsionMultiplier, int maxIterations) {
-		UndirectedGraph<String, Connection> graph = makeGraph();
+		UndirectedGraph<Node, Edge> graph = makeGraph();
 
 		// Set up layout algorithm
-		FRLayout<String, Connection> layout =
-			new FRLayout<String, Connection>(graph);
+		FRLayout<Node, Edge> layout =
+			new FRLayout<Node, Edge>(graph);
 		layout.setAttractionMultiplier(attractionMultiplier);
 		layout.setRepulsionMultiplier(repulsionMultiplier);
 		layout.setMaxIterations(maxIterations);
@@ -106,35 +106,35 @@ public class SocialNetwork {
 		layout.setSize(new Dimension(1024,768));
 
 		// Create interactive viewer and set window size
-		VisualizationViewer<String, Connection> vv =
-			new VisualizationViewer<String, Connection>(layout);
+		VisualizationViewer<Node, Edge> vv =
+			new VisualizationViewer<Node, Edge>(layout);
 		vv.setPreferredSize(new Dimension(1024,768));
 		// Label vertices using their toString method
 		vv.getRenderContext().setVertexLabelTransformer(
-			new ToStringLabeller<String>());
+			new ToStringLabeller<Node>());
 		// Put vertex labels east (right) of vertices
 		vv.getRenderer().getVertexLabelRenderer().setPosition(
 			Position.E);
 		// Make vertex shape a small circle
 		vv.getRenderContext().setVertexShapeTransformer(
-			new Transformer<String,Shape>() {
+			new Transformer<Node,Shape>() {
 				@Override
-				public Shape transform(String s){
+				public Shape transform(Node s){
 					return new Ellipse2D.Double(-5, -5, 10, 10);
 				}
 			});
 		// Color edges gray to more easily see vertex labels
 		vv.getRenderContext().setEdgeDrawPaintTransformer(
-			new Transformer<Connection,Paint>() {
+			new Transformer<Edge,Paint>() {
 				@Override
-				public Paint transform(Connection s) {
+				public Paint transform(Edge s) {
 					return Color.GRAY;
 				}
 			});
 		
 		// Use default interactive mouse behavior
-		DefaultModalGraphMouse<String, Connection> gm = 
-				new DefaultModalGraphMouse<String, Connection>();
+		DefaultModalGraphMouse<Node, Edge> gm = 
+				new DefaultModalGraphMouse<Node, Edge>();
 		gm.setMode(DefaultModalGraphMouse.Mode.TRANSFORMING);
 		vv.setGraphMouse(gm);
 
@@ -155,14 +155,14 @@ public class SocialNetwork {
 	 * Make UndirectedGraph from social network and return it.
 	 * @return
 	 */
-	private UndirectedGraph<String, Connection> makeGraph() {
-		UndirectedGraph<String, Connection> graph = 
-			new UndirectedSparseGraph<String, Connection>();
-		for (String node : nodes) {
+	private UndirectedGraph<Node, Edge> makeGraph() {
+		UndirectedGraph<Node, Edge> graph = 
+			new UndirectedSparseGraph<Node, Edge>();
+		for (Node node : nodes) {
 			graph.addVertex(node);
 		}
-		for (Connection connection : connections) {
-			graph.addEdge(connection, connection.getFrom(), connection.getTo());
+		for (Edge edge : edges) {
+			graph.addEdge(edge, edge.getFrom(), edge.getTo());
 		}
 		return graph;
 	}
