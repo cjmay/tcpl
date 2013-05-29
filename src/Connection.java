@@ -1,17 +1,28 @@
 public class Connection {
-	private String f, t;
+	private final String from, to;
 
+	/**
+	 * Create a new connection from one user to another.
+	 * @param from user from which this connection originates
+	 * @param to user to which this connection goes
+	 */
 	public Connection(String from, String to) {
-		f = from;
-		t = to;
+		this.from = from;
+		this.to = to;
 	}
 
+	/**
+	 * Return user from which this connection originates.
+	 */
 	public String getFrom() {
-		return f;
+		return from;
 	}
 
+	/**
+	 * Return user to which this connection goes.
+	 */
 	public String getTo() {
-		return t;
+		return to;
 	}
 
 	@Override
@@ -19,6 +30,11 @@ public class Connection {
 		return getFrom() + "->" + getTo();
 	}
 
+	/**
+	 * Return true if and only if both connections go from some user A
+	 * to another user B.  That is, the connections must go between
+	 * the same users and in the same directions.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (! (obj instanceof Connection)) return false;
