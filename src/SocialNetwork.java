@@ -107,12 +107,16 @@ public class SocialNetwork {
 	 */
 	public void visualize(double attractionMultiplier,
 			double repulsionMultiplier, int maxIterations) {
-		for (Node node : adjacency.keySet())
+		int maxDegree = 0;
+		for (Node node : adjacency.keySet()) {
 			node.setCategory(null);
+			maxDegree = Math.max(maxDegree, adjacency.get(node).size());
+		}
 		int category = 0;
 		for (Node node : adjacency.keySet()) {
 			if (node.getCategory() == null)
 				setComponentCategory(node, category++);
+			node.setScale(adjacency.get(node).size() * 10 / (double) maxDegree);
 		}
 		UndirectedGraph<Node, Edge> graph = makeGraph();
 
@@ -182,10 +186,8 @@ public class SocialNetwork {
 			if (node.getCategory() == null) {
 				node.setCategory(category);
 				Set<Node> neighbors = adjacency.get(node);
-				if (neighbors != null) {
-					for (Node neighbor : neighbors) {
-						stack.push(neighbor);
-					}
+				for (Node neighbor : neighbors) {
+					stack.push(neighbor);
 				}
 			}
 		}
