@@ -11,7 +11,11 @@ Getting Started
 
 First you'll want to load this project in your favorite Java IDE, perhaps Eclipse.  Once that's done, open `src/SocialNetwork.java` .  At the top of the `SocialNetwork` class you'll see a `main` method that creates a new `SocialNetwork` object, calls its `load` method on a certain file, and then calls its `visualize` method.  This `main` method will be invoked when you compile and run the program.
 
-If you try to run the program now you will see an empty window.  This is because the `load` method still needs to be filled in!  Your task is to read the graph in from the file and store it in the `SocialNetwork` object so that it can be visualized.  A small hint is provided in a comment inside the `load` function.
+If you try to run the program now you will see an empty window.  This is because the `load` method still needs to be filled in!  Your task is to read the graph in from the file and store it in the `SocialNetwork` object so that it can be visualized.
+
+You may find that the provided graph file cannot easily be visualized as-is.  The real challenge is to modify your new `load` method in order to find the key patterns in this large, noisy data!  If you succeed, try evaluating your code on different datasets.
+
+Small hints are provided in a comment inside the `load` function.
 
 Graph File Description
 ----------------------
