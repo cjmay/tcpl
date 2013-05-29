@@ -42,10 +42,10 @@ public class SocialNetwork {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		File file = new File("user_edges.graph.gz");
+		File file = new File("graph.gz");
 		SocialNetwork network = new SocialNetwork();
 		network.load(file);
-		network.visualize(0.75, 0.75, 700);
+		network.visualize();
 	}
 
 	public void load(File file) throws IOException {
@@ -106,32 +106,13 @@ public class SocialNetwork {
 	public int getNumEdges() { return uniqueEdges.size(); }
 
 	/**
-	 * Visualize social network in simple interactive Swing window
-	 * with default layout parameters.
+	 * Visualize social network in simple interactive Swing window.
 	 */
 	public void visualize() {
-		visualize(1.75, 0.75, 700);
-	}
-	
-	/**
-	 * Visualize social network in simple interactive Swing window.
-	 * @param attractionMultiplier factor by which nodes are attracted to
-	 *                             one another
-	 * @param repulsionMultiplier factor by which nodes are repulsed by
-	 *                            one another
-	 * @param maxIterations number of iterations for which the layout
-	 *                      algorithm will run (don't set this too high!)
-	 */
-	public void visualize(double attractionMultiplier,
-			double repulsionMultiplier, int maxIterations) {
 		UndirectedGraph<Node, Edge> graph = makeGraph();
 
 		// Set up layout algorithm
-		FRLayout<Node, Edge> layout =
-			new FRLayout<Node, Edge>(graph);
-		layout.setAttractionMultiplier(attractionMultiplier);
-		layout.setRepulsionMultiplier(repulsionMultiplier);
-		layout.setMaxIterations(maxIterations);
+		FRLayout<Node, Edge> layout = new FRLayout<Node, Edge>(graph);
 		// Set dimensions of box in which graph will be laid out, can be
 		// smaller or larger than actual window size
 		layout.setSize(new Dimension(1024,768));
