@@ -33,9 +33,6 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class SocialNetwork {
-	private Set<Edge> uniqueEdges;
-	private Map<Node,Set<Node>> adjacency;
-
 	/**
 	 * Load social network from file and visualize.
 	 * @param args
@@ -64,24 +61,16 @@ public class SocialNetwork {
 		}
 
 		int maxDegree = 0;
-		for (Node node : adjacency.keySet()) {
+		for (Node node : getAllNodes()) {
 			node.setCategory(null);
-			maxDegree = Math.max(maxDegree, adjacency.get(node).size());
+			maxDegree = Math.max(maxDegree, getNeighbors(node).size());
 		}
 		int category = 0;
-		for (Node node : adjacency.keySet()) {
+		for (Node node : getAllNodes()) {
 			if (node.getCategory() == null)
 				setComponentCategory(node, category++);
-			node.setScale(adjacency.get(node).size() * 10 / (double) maxDegree);
+			node.setScale(getNeighbors(node).size() * 10 / (double) maxDegree);
 		}
-	}
-
-	/**
-	 * Initialize new, empty social network.
-	 */
-	public SocialNetwork() {
-		uniqueEdges = new HashSet<Edge>();
-		adjacency = new HashMap<Node,Set<Node>>();
 	}
 
 	/**
@@ -95,15 +84,21 @@ public class SocialNetwork {
 		updateAdjacency(edge.getTo(), edge.getFrom());
 	}
 
-	private void updateAdjacency(Node from, Node to) {
-		if (! adjacency.containsKey(from))
-			adjacency.put(from, new HashSet<Node>());
-
-		adjacency.get(from).add(to);
+	/**
+	 * Return the set of all nodes in the network.
+	 */
+	public Set<Node> getAllNodes() {
+		return adjacency.keySet();
 	}
 
-	public int getNumNodes() { return adjacency.size(); }
-	public int getNumEdges() { return uniqueEdges.size(); }
+	/**
+	 * Return the set of nodes that are adjacent to the given node
+	 * (that is, the nodes that share an edge with the given node).
+	 * @param node the node whose neighbors will be returned
+	 */
+	public Set<Node> getNeighbors(Node node) {
+		return adjacency.get(node);
+	}
 
 	/**
 	 * Visualize social network in simple interactive Swing window.
@@ -172,7 +167,7 @@ public class SocialNetwork {
 			Node node = stack.pop();
 			if (node.getCategory() == null) {
 				node.setCategory(category);
-				Set<Node> neighbors = adjacency.get(node);
+				Set<Node> neighbors = getNeighbors(node);
 				for (Node neighbor : neighbors) {
 					stack.push(neighbor);
 				}
@@ -183,6 +178,38 @@ public class SocialNetwork {
 	@Override
 	public String toString() {
 		return makeGraph().toString();
+	}
+
+	/**
+	 * Initialize new, empty social network.
+	 */
+	public SocialNetwork() {
+		uniqueEdges = new HashSet<Edge>();
+		adjacency = new HashMap<Node,Set<Node>>();
+	}
+
+	/**
+	 * Return number of nodes in this network.
+	 */
+	public int getNumNodes() {
+		return adjacency.size();
+	}
+
+	/**
+	 * Return number of undirected edges in this network.
+	 */
+	public int getNumEdges() {
+		return uniqueEdges.size();
+	}
+
+	private Set<Edge> uniqueEdges;
+	private Map<Node,Set<Node>> adjacency;
+
+	private void updateAdjacency(Node from, Node to) {
+		if (! adjacency.containsKey(from))
+			adjacency.put(from, new HashSet<Node>());
+
+		adjacency.get(from).add(to);
 	}
 
 	/**
