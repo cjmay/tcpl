@@ -4,8 +4,12 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
+import java.util.Random;
+import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.IOException;
 
@@ -23,7 +27,7 @@ import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class SocialNetwork {
 	private Set<Edge> edges;
-	private Set<Node> nodes;
+	private Map<Node,Set<Node>> adjacency;
 
 	/**
 	 * Load social network from file and visualize.
@@ -43,7 +47,7 @@ public class SocialNetwork {
 	 */
 	public SocialNetwork() {
 		edges = new HashSet<Edge>();
-		nodes = new HashSet<Node>();
+		adjacency = new HashMap<Node,Set<Node>>();
 	}
 
 	/**
@@ -53,11 +57,18 @@ public class SocialNetwork {
 	 */
 	public void add(Edge edge) {
 		edges.add(edge);
-		nodes.add(edge.getFrom());
-		nodes.add(edge.getTo());
+		updateAdjacency(edge.getFrom(), edge.getTo());
+		updateAdjacency(edge.getTo(), edge.getFrom());
 	}
 
-	public int getNumNodes() { return nodes.size(); }
+	private void updateAdjacency(Node from, Node to) {
+		if (! adjacency.containsKey(from))
+			adjacency.put(from, new HashSet<Node>());
+
+		adjacency.get(from).add(to);
+	}
+
+	public int getNumNodes() { return adjacency.size(); }
 	public int getNumEdges() { return edges.size(); }
 
 	/**
@@ -109,6 +120,9 @@ public class SocialNetwork {
 					return new Ellipse2D.Double(-5, -5, 10, 10);
 				}
 			});
+		// Make vertex color depend on category
+		vv.getRenderContext().setVertexFillPaintTransformer(
+			new VertexCategoryPainter());
 		// Color edges gray to more easily see vertex labels
 		vv.getRenderContext().setEdgeDrawPaintTransformer(
 			new Transformer<Edge,Paint>() {
@@ -144,12 +158,41 @@ public class SocialNetwork {
 	private UndirectedGraph<Node, Edge> makeGraph() {
 		UndirectedGraph<Node, Edge> graph = 
 			new UndirectedSparseGraph<Node, Edge>();
-		for (Node node : nodes) {
+		for (Node node : adjacency.keySet()) {
 			graph.addVertex(node);
 		}
 		for (Edge edge : edges) {
 			graph.addEdge(edge, edge.getFrom(), edge.getTo());
 		}
 		return graph;
+	}
+
+	private static class VertexCategoryPainter
+			implements Transformer<Node,Paint> {
+		private static final Color DEFAULT_COLOR = Color.RED;
+		private static final float TARGET_RGB_SUM = 1;
+		private Map<Integer,Color> colorMap;
+		private Random prng;
+
+		public VertexCategoryPainter() {
+			colorMap = new HashMap<Integer,Color>();
+			prng = new Random((int) new Date().getTime());
+		}
+
+		@Override
+		public Paint transform(Node s){
+			if (s.getCategory() == null) {
+				return DEFAULT_COLOR;
+			} else if (colorMap.containsKey(s.getCategory())) {
+				return colorMap.get(s.getCategory());
+			} else {
+				float r = prng.nextFloat();
+				float g = Math.max(0, TARGET_RGB_SUM - r) * prng.nextFloat();
+				float b = TARGET_RGB_SUM - r - g;
+				Color color = new Color(r, g, b);
+				colorMap.put(s.getCategory(), color);
+				return color;
+			}
+		}
 	}
 }
