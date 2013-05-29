@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class GraphFileScanner {
 	private BufferedReader reader;
-	private List<String> nextLine;
+	private List<String> nextLineTokens;
 
 	/**
 	 * Open file pointer to compressed graph file
@@ -32,21 +32,21 @@ public class GraphFileScanner {
 	 * @return whether there is an unscanned line
 	 */
 	public boolean hasNextLine() {
-		if (nextLine == null) {
+		if (nextLineTokens == null) {
 			try {
-				String nextLineUnsplit = reader.readLine();
-				if (nextLineUnsplit != null) {
-					nextLineUnsplit = nextLineUnsplit.trim();
-					if (nextLineUnsplit.length() > 0) {
-						nextLine = Arrays.asList(nextLineUnsplit.split("\t"));
+				String nextLineStr = reader.readLine();
+				if (nextLineStr != null) {
+					nextLineStr = nextLineStr.trim();
+					if (nextLineStr.length() > 0) {
+						nextLineTokens = Arrays.asList(nextLineStr.split("\t"));
 					}
 				}
 			} catch (IOException ex) {
-				// just leave nextLine as null (end-of-file behavior)
+				// just leave nextLineTokens as null (end-of-file behavior)
 			}
 		}
 
-		return nextLine != null;
+		return nextLineTokens != null;
 	}
 
 	/**
@@ -59,6 +59,9 @@ public class GraphFileScanner {
 		if (! hasNextLine())
 			throw new NoSuchElementException();
 
-		return nextLine;
+		List<String> lineTokens = nextLineTokens;
+		nextLineTokens = null;
+
+		return lineTokens;
 	}
 }
