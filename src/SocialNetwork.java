@@ -32,9 +32,6 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class SocialNetwork {
-	private Set<Edge> uniqueEdges;
-	private Map<Node,Set<Node>> adjacency;
-
 	/**
 	 * Load social network from file and visualize.
 	 * @param args
@@ -48,16 +45,16 @@ public class SocialNetwork {
 	}
 
 	public void load(File file) throws IOException {
-		// TODO: Use GraphFileScanner to read edges from graph file
-		// and add them to this network
-	}
+		// TODO: Use GraphFileScanner to read edges from the graph file
+		// and use SocialNetwork's add method to add them to this
+		// network...
 
-	/**
-	 * Initialize new, empty social network.
-	 */
-	public SocialNetwork() {
-		uniqueEdges = new HashSet<Edge>();
-		adjacency = new HashMap<Node,Set<Node>>();
+		// You should not need to change any methods besides this one.
+
+		// After you have loaded all the edges into this network, you
+		// may want to use SocialNetwork's getAllNodes method
+		// and getNeighbors method here.  See those methods'
+		// documentation below.
 	}
 
 	/**
@@ -71,15 +68,21 @@ public class SocialNetwork {
 		updateAdjacency(edge.getTo(), edge.getFrom());
 	}
 
-	private void updateAdjacency(Node from, Node to) {
-		if (! adjacency.containsKey(from))
-			adjacency.put(from, new HashSet<Node>());
-
-		adjacency.get(from).add(to);
+	/**
+	 * Return the set of all nodes in the network.
+	 */
+	public Set<Node> getAllNodes() {
+		return adjacency.keySet();
 	}
 
-	public int getNumNodes() { return adjacency.size(); }
-	public int getNumEdges() { return uniqueEdges.size(); }
+	/**
+	 * Return the set of nodes that are adjacent to the given node
+	 * (that is, the nodes that share an edge with the given node).
+	 * @param node the node whose neighbors will be returned
+	 */
+	public Set<Node> getNeighbors(Node node) {
+		return adjacency.get(node);
+	}
 
 	/**
 	 * Visualize social network in simple interactive Swing window.
@@ -140,9 +143,36 @@ public class SocialNetwork {
 		frame.setVisible(true);
 	}
 
-	@Override
-	public String toString() {
-		return makeGraph().toString();
+	/**
+	 * Initialize new, empty social network.
+	 */
+	public SocialNetwork() {
+		uniqueEdges = new HashSet<Edge>();
+		adjacency = new HashMap<Node,Set<Node>>();
+	}
+
+	/**
+	 * Return number of nodes in this network.
+	 */
+	public int getNumNodes() {
+		return adjacency.size();
+	}
+
+	/**
+	 * Return number of undirected edges in this network.
+	 */
+	public int getNumEdges() {
+		return uniqueEdges.size();
+	}
+
+	private Set<Edge> uniqueEdges;
+	private Map<Node,Set<Node>> adjacency;
+
+	private void updateAdjacency(Node from, Node to) {
+		if (! adjacency.containsKey(from))
+			adjacency.put(from, new HashSet<Node>());
+
+		adjacency.get(from).add(to);
 	}
 
 	/**
