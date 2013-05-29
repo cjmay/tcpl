@@ -45,11 +45,11 @@ public class SocialNetwork {
             Node from = new Node(line.get(0));
             Node to = new Node(line.get(1));
             int count = Integer.parseInt(line.get(2));
-            if (count > 25)
+            if (count > 20 && !from.getName().contains("follow") && !to.getName().contains("follow") && !from.getName().contains("retweet") && !to.getName().contains("retweet"))
                 network.add(new Edge(from, to));
 		}
 
-		network.visualize(0.75, 0.75, 100);
+		network.visualize(0.75, 0.75, 500);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class SocialNetwork {
 	 * with default layout parameters.
 	 */
 	public void visualize() {
-		visualize(0.75, 0.75, 700);
+		visualize(1.75, 0.75, 700);
 	}
 	
 	/**
