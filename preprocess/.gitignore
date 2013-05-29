@@ -1,0 +1,7 @@
+*.pyc
+*.graph
+*.graph.[0-9]
+*.graph.gz
+*.graph.[0-9].gz
+*.json
+*.json.[0-9]
