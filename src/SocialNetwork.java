@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.Shape;
+
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
 import java.util.Random;
@@ -116,8 +118,11 @@ public class SocialNetwork {
 		vv.getRenderContext().setVertexShapeTransformer(
 			new Transformer<Node,Shape>() {
 				@Override
-				public Shape transform(Node s){
-					return new Ellipse2D.Double(-5, -5, 10, 10);
+				public Shape transform(Node s) {
+					Shape origShape = new Ellipse2D.Double(-5, -5, 10, 10);
+					return AffineTransform
+						.getScaleInstance(s.getScale(), s.getScale())
+						.createTransformedShape(origShape);
 				}
 			});
 		// Make vertex color depend on category

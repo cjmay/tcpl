@@ -1,6 +1,7 @@
 public class Node {
 	private final String name;
 	private Integer category;
+	private double scale;
 
 	/**
 	 * Create a new node with a given name
@@ -8,6 +9,7 @@ public class Node {
 	 */
 	public Node(String name) {
 		this.name = name;
+		scale = 1.0;
 	}
 
 	/**
@@ -15,6 +17,36 @@ public class Node {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Return category of node.
+	 */
+	public Integer getCategory() {
+		return category;
+	}
+
+	/**
+	 * Set category of node.
+	 * @param cat new node category
+	 */
+	public void setCategory(Integer cat) {
+		category = cat;
+	}
+
+	/**
+	 * Return scale of node.
+	 */
+	public double getScale() {
+		return scale;
+	}
+
+	/**
+	 * Set scale of node.
+	 * @param sca new node scale
+	 */
+	public void setScale(double sca) {
+		scale = sca;
 	}
 
 	@Override
@@ -35,13 +67,5 @@ public class Node {
 	@Override
 	public int hashCode() {
 		return getName().hashCode();
-	}
-
-	public Integer getCategory() {
-		return category;
-	}
-
-	public void setCategory(Integer c) {
-		category = c;
 	}
 }
