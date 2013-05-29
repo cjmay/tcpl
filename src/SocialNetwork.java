@@ -54,7 +54,9 @@ public class SocialNetwork {
 		// After you have loaded all the edges into this network, you
 		// may want to use SocialNetwork's getAllNodes method
 		// and getNeighbors method here.  See those methods'
-		// documentation below.
+		// documentation below.  Additionally, consider using Node's
+		// setScale and setCategory methods, which are used in the
+		// visualization to determine the size and color of a node.
 	}
 
 	/**
