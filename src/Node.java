@@ -1,5 +1,6 @@
 public class Node {
 	private final String name;
+	private Integer category;
 
 	/**
 	 * Create a new node with a given name
@@ -34,5 +35,13 @@ public class Node {
 	@Override
 	public int hashCode() {
 		return getName().hashCode();
+	}
+
+	public Integer getCategory() {
+		return category;
+	}
+
+	public void setCategory(Integer c) {
+		category = c;
 	}
 }
