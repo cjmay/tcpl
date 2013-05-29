@@ -17,7 +17,7 @@ import javax.swing.JFrame;
 
 import org.apache.commons.collections15.Transformer;
 
-import edu.uci.ics.jung.algorithms.layout.FRLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout2;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -49,7 +49,7 @@ public class SocialNetwork {
                 network.add(new Edge(from, to));
 		}
 
-		network.visualize(0.75, 0.75, 500);
+		network.visualize(0.75, 0.75, 700);
 	}
 
 	/**
@@ -96,8 +96,8 @@ public class SocialNetwork {
 		UndirectedGraph<Node, Edge> graph = makeGraph();
 
 		// Set up layout algorithm
-		FRLayout<Node, Edge> layout =
-			new FRLayout<Node, Edge>(graph);
+		FRLayout2<Node, Edge> layout =
+			new FRLayout2<Node, Edge>(graph);
 		layout.setAttractionMultiplier(attractionMultiplier);
 		layout.setRepulsionMultiplier(repulsionMultiplier);
 		layout.setMaxIterations(maxIterations);
