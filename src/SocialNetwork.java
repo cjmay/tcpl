@@ -42,21 +42,38 @@ public class SocialNetwork {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		SocialNetwork network = new SocialNetwork();
-
-		// Read network from file using GraphFileScanner
 		File file = new File("user_edges.graph.gz");
+		SocialNetwork network = new SocialNetwork();
+		network.load(file);
+		network.visualize(0.75, 0.75, 700);
+	}
+
+	public void load(File file) throws IOException {
 		GraphFileScanner scanner = new GraphFileScanner(file);
 		while (scanner.hasNextLine()) {
 			List<String> line = scanner.nextLine();
             Node from = new Node(line.get(0));
             Node to = new Node(line.get(1));
             int count = Integer.parseInt(line.get(2));
-            if (count > 5 && !from.getName().contains("follow") && !to.getName().contains("follow") && !from.getName().contains("retweet") && !to.getName().contains("retweet"))
-                network.add(new Edge(from, to));
+            if (count > 5
+					&& !from.getName().contains("follow")
+					&& !to.getName().contains("follow")
+					&& !from.getName().contains("retweet")
+					&& !to.getName().contains("retweet"))
+                add(new Edge(from, to));
 		}
 
-		network.visualize(0.75, 0.75, 700);
+		int maxDegree = 0;
+		for (Node node : adjacency.keySet()) {
+			node.setCategory(null);
+			maxDegree = Math.max(maxDegree, adjacency.get(node).size());
+		}
+		int category = 0;
+		for (Node node : adjacency.keySet()) {
+			if (node.getCategory() == null)
+				setComponentCategory(node, category++);
+			node.setScale(adjacency.get(node).size() * 10 / (double) maxDegree);
+		}
 	}
 
 	/**
@@ -107,17 +124,6 @@ public class SocialNetwork {
 	 */
 	public void visualize(double attractionMultiplier,
 			double repulsionMultiplier, int maxIterations) {
-		int maxDegree = 0;
-		for (Node node : adjacency.keySet()) {
-			node.setCategory(null);
-			maxDegree = Math.max(maxDegree, adjacency.get(node).size());
-		}
-		int category = 0;
-		for (Node node : adjacency.keySet()) {
-			if (node.getCategory() == null)
-				setComponentCategory(node, category++);
-			node.setScale(adjacency.get(node).size() * 10 / (double) maxDegree);
-		}
 		UndirectedGraph<Node, Edge> graph = makeGraph();
 
 		// Set up layout algorithm
