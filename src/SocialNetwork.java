@@ -48,8 +48,9 @@ public class SocialNetwork {
 	}
 
 	public void load(File file) throws IOException {
-		// TODO: Use GraphFileScanner to read edges from graph file
-		// and add them to this network
+		// TODO: Use GraphFileScanner to read edges from the graph file
+		// and use the SocialNetwork add method to add them to this
+		// network...
 	}
 
 	/**
@@ -70,16 +71,6 @@ public class SocialNetwork {
 		updateAdjacency(edge.getFrom(), edge.getTo());
 		updateAdjacency(edge.getTo(), edge.getFrom());
 	}
-
-	private void updateAdjacency(Node from, Node to) {
-		if (! adjacency.containsKey(from))
-			adjacency.put(from, new HashSet<Node>());
-
-		adjacency.get(from).add(to);
-	}
-
-	public int getNumNodes() { return adjacency.size(); }
-	public int getNumEdges() { return uniqueEdges.size(); }
 
 	/**
 	 * Visualize social network in simple interactive Swing window.
@@ -140,9 +131,11 @@ public class SocialNetwork {
 		frame.setVisible(true);
 	}
 
-	@Override
-	public String toString() {
-		return makeGraph().toString();
+	private void updateAdjacency(Node from, Node to) {
+		if (! adjacency.containsKey(from))
+			adjacency.put(from, new HashSet<Node>());
+
+		adjacency.get(from).add(to);
 	}
 
 	/**
