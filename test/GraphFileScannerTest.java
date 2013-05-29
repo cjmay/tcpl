@@ -1,13 +1,11 @@
-import static org.mockito.Mockito.*;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import org.junit.runner.RunWith;
 import org.junit.rules.ExpectedException;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.Before;
 import org.junit.After;
 import static org.junit.Assert.*;
+
+import java.util.Arrays;
 
 import java.util.zip.GZIPOutputStream;
 
@@ -17,7 +15,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-@RunWith(MockitoJUnitRunner.class)
 public class GraphFileScannerTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -57,6 +54,114 @@ public class GraphFileScannerTest {
 		writer.close();
 
         GraphFileScanner scanner = new GraphFileScanner(file);
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testBlankLineFile() throws IOException {
+		writer.write(" \t \n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testBlankLinesFile() throws IOException {
+		writer.write("\n\t\n\t\n \t \n \n\n \t \n\n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testOneLineFile() throws IOException {
+		writer.write("hello\tworld\n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"hello", "world"}),
+			scanner.nextLine());
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testOneLineFileOneToken() throws IOException {
+		writer.write("hello,world\n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"hello,world"}),
+			scanner.nextLine());
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testOneLineFileWithSpace() throws IOException {
+		writer.write("hell o\tworld\n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"hell o", "world"}),
+			scanner.nextLine());
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testOneLineFileWithExtraNewlines() throws IOException {
+		writer.write("\nhello\tworld\n\n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"hello", "world"}),
+			scanner.nextLine());
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testOneLineFileWithConsecutiveTabs() throws IOException {
+		writer.write("hello\t\tworld\n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"hello", "", "world"}),
+			scanner.nextLine());
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testTwoLineFile() throws IOException {
+		writer.write("hello\tworld\nfoo\tbar\tbaz\n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"hello", "world"}),
+			scanner.nextLine());
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"foo", "bar", "baz"}),
+			scanner.nextLine());
+		assertFalse(scanner.hasNextLine());
+    }
+
+    @Test
+    public void testTwoLineFileWithExtraWhitespace() throws IOException {
+		writer.write("\n\nhello\tworld\n\nfoo\tbar\tbaz\n\n");
+		writer.close();
+
+        GraphFileScanner scanner = new GraphFileScanner(file);
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"hello", "world"}),
+			scanner.nextLine());
+		assertTrue(scanner.hasNextLine());
+		assertEquals(Arrays.asList(new String[] {"foo", "bar", "baz"}),
+			scanner.nextLine());
 		assertFalse(scanner.hasNextLine());
     }
 }
