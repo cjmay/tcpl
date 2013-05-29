@@ -16,6 +16,11 @@ public class Node {
 		return name;
 	}
 
+	@Override
+	public String toString() {
+		return getName();
+	}
+
 	/**
 	 * Return true if and only if both nodes have the same name.
 	 */
