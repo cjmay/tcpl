@@ -10,6 +10,8 @@ WHITESPACE_RE = re.compile(r'\s+')
 NON_WORD_RE = re.compile(r'([^\w]|_)+')
 BAD_WORD_TEMPLATE = '_CENSORED_%d_'
 
+TWEET_PRINT_INTERVAL = 10000
+
 
 class Tweet(object):
     def __init__(self, name_cleaner, j):
@@ -92,11 +94,17 @@ def count_undirected_pairs(category_item_counts):
 def tweet_generator(profanity_filename, *tweet_filenames):
     name_cleaner = NameCleaner(profanity_filename)
     for tweet_filename in tweet_filenames:
+        print 'Loading tweets from %s...' % tweet_filename
+        i = 0
         with codecs.open(tweet_filename, encoding='utf-8') as in_f:
             for line in in_f:
+                if i % TWEET_PRINT_INTERVAL == 0:
+                    print 'Loading tweet %d...' % i
                 j = json.loads(line)
                 if 'user' in j:
                     yield Tweet(name_cleaner, j)
+                i += 1
+        print 'Loaded %d tweets from %s' % (i, tweet_filename)
 
 
 def write_graph(filename, edge_counts):
@@ -107,6 +115,7 @@ def write_graph(filename, edge_counts):
 
 def make_hashtag_per_tweet_graph(profanity_filename,
         hashtag_per_tweet_edge_out_filename, *in_filenames):
+    print 'Generating and writing per-tweet hashtag-edge graph...'
     write_graph(hashtag_per_tweet_edge_out_filename, count_undirected_pairs(
         dict([
             (
@@ -121,11 +130,13 @@ def make_hashtag_per_tweet_graph(profanity_filename,
 
 def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
         user_edge_out_filename, *in_filenames):
+    print 'Generating and writing hashtag-edge graph...'
     write_graph(user_edge_out_filename,
         count_undirected_pairs(make_category_item_counts(
             tweet_generator(profanity_filename, *in_filenames),
             category_generator=Tweet.username_generator,
             item_generator=Tweet.hashtag_generator)))
+    print 'Generating and writing user-edge graph...'
     write_graph(hashtag_edge_out_filename,
         count_undirected_pairs(make_category_item_counts(
             tweet_generator(profanity_filename, *in_filenames),
