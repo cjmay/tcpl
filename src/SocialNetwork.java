@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.List;
+import java.util.Stack;
 import java.util.Random;
 import java.util.Date;
 import java.util.Set;
@@ -167,13 +168,19 @@ public class SocialNetwork {
 		frame.setVisible(true);
 	}
 
-	private void setComponentCategory(Node node, int category) {
-		if (node.getCategory() == null) {
-			node.setCategory(category);
-			Set<Node> neighbors = adjacency.get(node);
-			if (neighbors != null) {
-				for (Node neighbor : neighbors) {
-					setComponentCategory(neighbor, category);
+	private void setComponentCategory(Node root, int category) {
+		Stack<Node> stack = new Stack<Node>();
+		stack.push(root);
+
+		while (! stack.isEmpty()) {
+			Node node = stack.pop();
+			if (node.getCategory() == null) {
+				node.setCategory(category);
+				Set<Node> neighbors = adjacency.get(node);
+				if (neighbors != null) {
+					for (Node neighbor : neighbors) {
+						stack.push(neighbor);
+					}
 				}
 			}
 		}
