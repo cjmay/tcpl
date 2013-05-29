@@ -45,7 +45,7 @@ public class SocialNetwork {
             Node from = new Node(line.get(0));
             Node to = new Node(line.get(1));
             int count = Integer.parseInt(line.get(2));
-            if (count > 20 && !from.getName().contains("follow") && !to.getName().contains("follow") && !from.getName().contains("retweet") && !to.getName().contains("retweet"))
+            if (count > 5 && !from.getName().contains("follow") && !to.getName().contains("follow") && !from.getName().contains("retweet") && !to.getName().contains("retweet"))
                 network.add(new Edge(from, to));
 		}
 
