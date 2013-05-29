@@ -38,7 +38,7 @@ public class SocialNetwork {
 		SocialNetwork network = new SocialNetwork();
 
 		// Read network from file using GraphFileScanner
-		File file = new File("user_edges.graph");
+		File file = new File("user_edges.graph.gz");
 		GraphFileScanner scanner = new GraphFileScanner(file);
 		while (scanner.hasNextLine()) {
 			List<String> line = scanner.nextLine();
