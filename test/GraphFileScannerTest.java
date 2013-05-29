@@ -5,6 +5,8 @@ import org.junit.runner.RunWith;
 import org.junit.rules.ExpectedException;
 import org.junit.Test;
 import org.junit.Rule;
+import org.junit.Before;
+import org.junit.After;
 import static org.junit.Assert.*;
 
 import java.util.zip.GZIPOutputStream;
@@ -20,6 +22,26 @@ public class GraphFileScannerTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
+	private File file;
+	private Writer writer;
+
+	@Before
+	public void setUp() throws IOException {
+		file = File.createTempFile(
+			GraphFileScannerTest.class.getName(),
+			".graph.gz");
+		file.deleteOnExit();
+
+		writer = new OutputStreamWriter(
+			new GZIPOutputStream(new FileOutputStream(file)),
+			"UTF-8");
+	}
+
+	@After
+	public void tearDown() throws IOException {
+		writer.close();
+	}
+
     @Test
     public void testBadFile() throws IOException {
 		File file = new File("/does/not/exist.txt");
@@ -32,14 +54,6 @@ public class GraphFileScannerTest {
 
     @Test
     public void testEmptyFile() throws IOException {
-		File file = File.createTempFile(
-			GraphFileScannerTest.class.getName(),
-			".graph.gz");
-		file.deleteOnExit();
-
-		Writer writer = new OutputStreamWriter(
-			new GZIPOutputStream(new FileOutputStream(file)),
-			"UTF-8");
 		writer.close();
 
         GraphFileScanner scanner = new GraphFileScanner(file);
