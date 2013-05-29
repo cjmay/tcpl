@@ -1,11 +1,11 @@
 public class Person {
-    private final String name;
+	private final String name;
 
-    public Person(String name) {
-        this.name = name;
-    }
+	public Person(String name) {
+		this.name = name;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 }

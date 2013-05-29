@@ -7,6 +7,8 @@ import java.awt.geom.Ellipse2D;
 import java.util.Set;
 import java.util.HashSet;
 
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 import org.apache.commons.collections15.Transformer;
@@ -81,7 +83,7 @@ public class SocialNetwork {
 
 		// Set up layout algorithm
 		FRLayout<String, Connection> layout =
-	    	new FRLayout<String, Connection>(graph);
+			new FRLayout<String, Connection>(graph);
 		layout.setAttractionMultiplier(attractionMultiplier);
 		layout.setRepulsionMultiplier(repulsionMultiplier);
 		layout.setMaxIterations(maxIterations);
@@ -91,30 +93,30 @@ public class SocialNetwork {
 
 		// Create interactive viewer and set window size
 		VisualizationViewer<String, Connection> vv =
-	    	new VisualizationViewer<String, Connection>(layout);
+			new VisualizationViewer<String, Connection>(layout);
 		vv.setPreferredSize(new Dimension(1024,768));
 		// Label vertices using their toString method
 		vv.getRenderContext().setVertexLabelTransformer(
-	    	new ToStringLabeller<String>());
+			new ToStringLabeller<String>());
 		// Put vertex labels east (right) of vertices
 		vv.getRenderer().getVertexLabelRenderer().setPosition(
-	    	Position.E);
+			Position.E);
 		// Make vertex shape a small circle
 		vv.getRenderContext().setVertexShapeTransformer(
-	    	new Transformer<String,Shape>() {
-	        	@Override
-	        	public Shape transform(String s){
-	            	return new Ellipse2D.Double(-5, -5, 10, 10);
-	        	}
-	    	});
+			new Transformer<String,Shape>() {
+				@Override
+				public Shape transform(String s){
+					return new Ellipse2D.Double(-5, -5, 10, 10);
+				}
+			});
 		// Color edges gray to more easily see vertex labels
 		vv.getRenderContext().setEdgeDrawPaintTransformer(
-	    	new Transformer<Connection,Paint>() {
-	        	@Override
-	        	public Paint transform(Connection s) {
-	            	return Color.GRAY;
-	        	}
-	    	});
+			new Transformer<Connection,Paint>() {
+				@Override
+				public Paint transform(Connection s) {
+					return Color.GRAY;
+				}
+			});
 		
 		// Use default interactive mouse behavior
 		DefaultModalGraphMouse<String, Connection> gm = 
@@ -141,12 +143,12 @@ public class SocialNetwork {
 	 */
 	private UndirectedGraph<String, Connection> makeGraph() {
 		UndirectedGraph<String, Connection> graph = 
-	    	new UndirectedSparseGraph<String, Connection>();
+			new UndirectedSparseGraph<String, Connection>();
 		for (String node : nodes) {
-	    	graph.addVertex(node);
+			graph.addVertex(node);
 		}
 		for (Connection connection : connections) {
-	    	graph.addEdge(connection, connection.getFrom(), connection.getTo());
+			graph.addEdge(connection, connection.getFrom(), connection.getTo());
 		}
 		return graph;
 	}
