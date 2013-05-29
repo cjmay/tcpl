@@ -7,6 +7,8 @@ import java.awt.geom.Ellipse2D;
 import java.util.Set;
 import java.util.HashSet;
 
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 import org.apache.commons.collections15.Transformer;
