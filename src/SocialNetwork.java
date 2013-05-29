@@ -32,9 +32,6 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class SocialNetwork {
-	private Set<Edge> uniqueEdges;
-	private Map<Node,Set<Node>> adjacency;
-
 	/**
 	 * Load social network from file and visualize.
 	 * @param args
@@ -49,16 +46,15 @@ public class SocialNetwork {
 
 	public void load(File file) throws IOException {
 		// TODO: Use GraphFileScanner to read edges from the graph file
-		// and use the SocialNetwork add method to add them to this
+		// and use SocialNetwork's add method to add them to this
 		// network...
-	}
 
-	/**
-	 * Initialize new, empty social network.
-	 */
-	public SocialNetwork() {
-		uniqueEdges = new HashSet<Edge>();
-		adjacency = new HashMap<Node,Set<Node>>();
+		// You should not need to change any methods besides this one.
+
+		// After you have loaded all the edges into this network, you
+		// may want to use SocialNetwork's getAllNodes method
+		// and getNeighbors method here.  See those methods'
+		// documentation below.
 	}
 
 	/**
@@ -70,6 +66,22 @@ public class SocialNetwork {
 		uniqueEdges.add(edge);
 		updateAdjacency(edge.getFrom(), edge.getTo());
 		updateAdjacency(edge.getTo(), edge.getFrom());
+	}
+
+	/**
+	 * Return the set of all nodes in the network.
+	 */
+	public Set<Node> getAllNodes() {
+		return adjacency.keySet();
+	}
+
+	/**
+	 * Return the set of nodes that are adjacent to the given node
+	 * (that is, the nodes that share an edge with the given node).
+	 * @param node the node whose neighbors will be returned
+	 */
+	public Set<Node> getNeighbors(Node node) {
+		return adjacency.get(node);
 	}
 
 	/**
@@ -130,6 +142,31 @@ public class SocialNetwork {
 		frame.pack();
 		frame.setVisible(true);
 	}
+
+	/**
+	 * Initialize new, empty social network.
+	 */
+	public SocialNetwork() {
+		uniqueEdges = new HashSet<Edge>();
+		adjacency = new HashMap<Node,Set<Node>>();
+	}
+
+	/**
+	 * Return number of nodes in this network.
+	 */
+	public int getNumNodes() {
+		return adjacency.size();
+	}
+
+	/**
+	 * Return number of undirected edges in this network.
+	 */
+	public int getNumEdges() {
+		return uniqueEdges.size();
+	}
+
+	private Set<Edge> uniqueEdges;
+	private Map<Node,Set<Node>> adjacency;
 
 	private void updateAdjacency(Node from, Node to) {
 		if (! adjacency.containsKey(from))

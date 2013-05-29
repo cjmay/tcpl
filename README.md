@@ -16,13 +16,13 @@ If you try to run the program now you will see an empty window.  This is because
 Graph File Description
 ----------------------
 
-The graph file read by the `main` method should be a GZIP-compressed tab-delimited file with one edge per line.  Each line contains three fields separated by tabs, the names of the two nodes the edge connects and a number indicating how often that edge appeared in the original network.  Example:
+The graph file read by the `main` method should be a GZIP-compressed tab-delimited file with one edge per line.  Each line contains three fields, the names of the two nodes the edge connects and a number indicating how often that edge appeared in the original network.  Example:
 
-    bob	alice	42
-    alice	eve	3
-    bob	eve	4
+    Bob	Alice	42
+    Alice	Eve	3
+    Bob	Eve	4
 
-In this relatively simple example there are three nodes: bob, alice, and eve.  There is an edge between bob and alice with weight (count) 42.  There is an edge between alice and eve with weight 3, and an edge between bob and eve with weight 4.  If these weights indicated how many times one person talked with the other, we might conclude that bob and alice are close friends.
+In this relatively simple example there are three nodes: Bob, Alice, and Eve.  There is an edge between Bob and Alice with weight (count) 42.  There is an edge between Alice and Eve with weight 3, and an edge between Bob and Eve with weight 4.  If these weights indicated how many times one person talked with the other, we might conclude that Bob and Alice are close friends.
 
 Resources
 ---------
