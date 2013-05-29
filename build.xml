@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="dist" name="tcpl">
     <property environment="env"/>
-	<property file="build.${user.name}.properties" />
+    <property file="build.${user.name}.properties"/>
     <property file="build.properties"/>
+    <property name="run.class.name" value="SocialNetwork"/>
 
+    <path id="dist.classpath">
+        <fileset dir="dist">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
     <path id="build.classpath">
         <pathelement location="bin"/>
-    	<fileset dir="lib">
-    	    <include name="**/*.jar"/>
+        <fileset dir="lib">
+            <include name="**/*.jar"/>
         </fileset>
     </path>
     <path id="test.classpath">
         <pathelement location="testClasses"/>
         <path refid="build.classpath"/>
-		<fileset dir="test/lib">
-			<include name="*.jar" />
-		</fileset>
+        <fileset dir="test/lib">
+            <include name="*.jar" />
+        </fileset>
     </path>
 
     <target depends="clean" name="cleanall"/>
@@ -23,9 +29,9 @@
         <delete dir="bin"/>
         <delete dir="dist"/>
     </target>
-	<target name="cleantests" description="Clean test output directories">
-		<delete dir="testClasses"/>
-		<delete dir="testOutput"/>
+    <target name="cleantests" description="Clean test output directories">
+        <delete dir="testClasses"/>
+        <delete dir="testOutput"/>
     </target>
 
     <target name="build">
@@ -53,18 +59,24 @@
         </javac>
     </target>
 
+    <target name="run" depends="dist" description="Run main">
+        <java classname="${run.class.name}" fork="yes" maxmemory="1g">
+            <classpath refid="dist.classpath"/>
+        </java>
+    </target>
+
     <target name="test" depends="build, buildtests" description="Run tests">
         <mkdir dir="testOutput/xml"/>
         <junit fork="yes" printsummary="withOutAndErr" forkmode="perTest" maxmemory="256m" haltonfailure="false" failureproperty="tests.failed" showoutput="true">
-			<classpath refid="test.classpath" />
-			<formatter type="brief" usefile="false" />
-			<formatter type="xml" usefile="true" />
-			<batchtest todir="testOutput/xml">
-				<fileset dir="testClasses">
-					<include name="**/*Test.class" />
-				</fileset>
+            <classpath refid="test.classpath" />
+            <formatter type="brief" usefile="false" />
+            <formatter type="xml" usefile="true" />
+            <batchtest todir="testOutput/xml">
+                <fileset dir="testClasses">
+                    <include name="**/*Test.class" />
+                </fileset>
                 <formatter type="xml"/>
-			</batchtest>
+            </batchtest>
         </junit>
 
         <condition property="tests.failed.str"
@@ -73,7 +85,7 @@
             <isset property="tests.failed" />
         </condition>
 
-		<echo>
+        <echo>
             ************************
             *  ${tests.failed.str}    *
             ************************
@@ -81,9 +93,9 @@
     </target>
     <target name="junitreport" depends="test">
         <mkdir dir="testOutput/html"/>
-		<junitreport todir="testOutput/html">
-			<fileset dir="testOutput/xml" />
-			<report todir="testOutput/html" />
-		</junitreport>
+        <junitreport todir="testOutput/html">
+            <fileset dir="testOutput/xml" />
+            <report todir="testOutput/html" />
+        </junitreport>
     </target>
 </project>
