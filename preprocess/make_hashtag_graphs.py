@@ -121,7 +121,7 @@ def write_graph(filename, edge_counts):
 
 
 def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
-        user_edge_out_filename, hashtag_per_tweet_edge_out_filename,
+        user_edge_out_filename, tweet_edge_out_filename,
         *in_filenames):
     print 'Generating and writing user-edge graph...'
     write_graph(user_edge_out_filename,
@@ -135,8 +135,8 @@ def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
             tweet_generator(profanity_filename, *in_filenames),
             category_generator=Tweet.hashtag_generator,
             item_generator=Tweet.username_generator)))
-    print 'Generating and writing per-tweet hashtag-edge graph...'
-    write_graph(hashtag_per_tweet_edge_out_filename, count_undirected_pairs(
+    print 'Generating and writing tweet-edge graph...'
+    write_graph(tweet_edge_out_filename, count_undirected_pairs(
         dict([
             (
                 tweet,
