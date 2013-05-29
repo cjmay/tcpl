@@ -123,13 +123,13 @@ def write_graph(filename, edge_counts):
 def make_hashtag_graphs(profanity_filename, hashtag_edge_out_filename,
         user_edge_out_filename, hashtag_per_tweet_edge_out_filename,
         *in_filenames):
-    print 'Generating and writing hashtag-edge graph...'
+    print 'Generating and writing user-edge graph...'
     write_graph(user_edge_out_filename,
         count_undirected_pairs(make_category_item_counts(
             tweet_generator(profanity_filename, *in_filenames),
             category_generator=Tweet.username_generator,
             item_generator=Tweet.hashtag_generator)))
-    print 'Generating and writing user-edge graph...'
+    print 'Generating and writing hashtag-edge graph...'
     write_graph(hashtag_edge_out_filename,
         count_undirected_pairs(make_category_item_counts(
             tweet_generator(profanity_filename, *in_filenames),
