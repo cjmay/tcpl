@@ -33,7 +33,7 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class SocialNetwork {
-	private Set<Edge> edges;
+	private Set<Edge> uniqueEdges;
 	private Map<Node,Set<Node>> adjacency;
 
 	/**
@@ -63,7 +63,7 @@ public class SocialNetwork {
 	 * Initialize new, empty social network.
 	 */
 	public SocialNetwork() {
-		edges = new HashSet<Edge>();
+		uniqueEdges = new HashSet<Edge>();
 		adjacency = new HashMap<Node,Set<Node>>();
 	}
 
@@ -73,7 +73,7 @@ public class SocialNetwork {
 	 * @param edge
 	 */
 	public void add(Edge edge) {
-		edges.add(edge);
+		uniqueEdges.add(edge);
 		updateAdjacency(edge.getFrom(), edge.getTo());
 		updateAdjacency(edge.getTo(), edge.getFrom());
 	}
@@ -86,7 +86,7 @@ public class SocialNetwork {
 	}
 
 	public int getNumNodes() { return adjacency.size(); }
-	public int getNumEdges() { return edges.size(); }
+	public int getNumEdges() { return uniqueEdges.size(); }
 
 	/**
 	 * Visualize social network in simple interactive Swing window
@@ -206,7 +206,7 @@ public class SocialNetwork {
 		for (Node node : adjacency.keySet()) {
 			graph.addVertex(node);
 		}
-		for (Edge edge : edges) {
+		for (Edge edge : uniqueEdges) {
 			graph.addEdge(edge, edge.getFrom(), edge.getTo());
 		}
 		return graph;
