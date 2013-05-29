@@ -1,28 +1,28 @@
-public class User {
+public class Node {
 	private final String name;
 
 	/**
-	 * Create a new user with a given name
-	 * @param name name of user
+	 * Create a new node with a given name
+	 * @param name name of node
 	 */
-	public User(String name) {
+	public Node(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * Return name of user.
+	 * Return name of node.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Return true if and only if both users have the same name.
+	 * Return true if and only if both nodes have the same name.
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (! (obj instanceof User)) return false;
-		User other = (User) obj;
+		if (! (obj instanceof Node)) return false;
+		Node other = (Node) obj;
 		return getName().equals(other.getName());
 	}
 

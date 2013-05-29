@@ -1,10 +1,10 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class UserTest {
+public class NodeTest {
 	@Test
 	public void testGetName() {
-		User user = new User("Larry");
-		assertEquals("Larry", user.getName());
+		Node node = new Node("Larry");
+		assertEquals("Larry", node.getName());
 	}
 }
