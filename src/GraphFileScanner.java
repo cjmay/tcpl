@@ -32,17 +32,15 @@ public class GraphFileScanner {
 	 * @return whether there is an unscanned line
 	 */
 	public boolean hasNextLine() {
-		if (nextLineTokens == null) {
+		while (nextLineTokens == null) {
 			try {
 				String nextLineStr = reader.readLine();
-				if (nextLineStr != null) {
-					nextLineStr = nextLineStr.trim();
-					if (nextLineStr.length() > 0) {
-						nextLineTokens = Arrays.asList(nextLineStr.split("\t"));
-					}
-				}
+				if (nextLineStr == null) break; // end-of-file
+				nextLineStr = nextLineStr.trim();
+				if (nextLineStr.length() == 0) continue; // ignore empty lines
+				nextLineTokens = Arrays.asList(nextLineStr.split("\t"));
 			} catch (IOException ex) {
-				// just leave nextLineTokens as null (end-of-file behavior)
+				break; // file read error
 			}
 		}
 
