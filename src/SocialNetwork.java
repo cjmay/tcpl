@@ -6,6 +6,10 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
+import java.io.File;
+import java.io.IOException;
+
+import java.util.List;
 import java.util.Random;
 import java.util.Date;
 import java.util.Set;
@@ -37,11 +41,15 @@ public class SocialNetwork {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
+		File file = new File("graph.gz");
 		SocialNetwork network = new SocialNetwork();
+		network.load(file);
+		network.visualize();
+	}
 
-		// Read network from file using GraphFileScanner
-
-		network.visualize(0.75, 0.75, 700);
+	public void load(File file) throws IOException {
+		// TODO: Use GraphFileScanner to read edges from graph file
+		// and add them to this network
 	}
 
 	/**
@@ -74,32 +82,13 @@ public class SocialNetwork {
 	public int getNumEdges() { return uniqueEdges.size(); }
 
 	/**
-	 * Visualize social network in simple interactive Swing window
-	 * with default layout parameters.
+	 * Visualize social network in simple interactive Swing window.
 	 */
 	public void visualize() {
-		visualize(0.75, 0.75, 700);
-	}
-	
-	/**
-	 * Visualize social network in simple interactive Swing window.
-	 * @param attractionMultiplier factor by which nodes are attracted to
-	 *                             one another
-	 * @param repulsionMultiplier factor by which nodes are repulsed by
-	 *                            one another
-	 * @param maxIterations number of iterations for which the layout
-	 *                      algorithm will run (don't set this too high!)
-	 */
-	public void visualize(double attractionMultiplier,
-			double repulsionMultiplier, int maxIterations) {
 		UndirectedGraph<Node, Edge> graph = makeGraph();
 
 		// Set up layout algorithm
-		FRLayout<Node, Edge> layout =
-			new FRLayout<Node, Edge>(graph);
-		layout.setAttractionMultiplier(attractionMultiplier);
-		layout.setRepulsionMultiplier(repulsionMultiplier);
-		layout.setMaxIterations(maxIterations);
+		FRLayout<Node, Edge> layout = new FRLayout<Node, Edge>(graph);
 		// Set dimensions of box in which graph will be laid out, can be
 		// smaller or larger than actual window size
 		layout.setSize(new Dimension(1024,768));
