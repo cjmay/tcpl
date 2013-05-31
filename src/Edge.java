@@ -1,5 +1,6 @@
 public class Edge {
 	private final Node from, to;
+	private double scale;
 	private Integer category;
 
 	/**
@@ -10,6 +11,7 @@ public class Edge {
 	public Edge(Node from, Node to) {
 		this.from = from;
 		this.to = to;
+		scale = 1.0;
 	}
 
 	/**
@@ -31,6 +33,21 @@ public class Edge {
 	 */
 	public Integer getCategory() {
 		return category;
+	}
+
+	/**
+	 * Return scale of edge.
+	 */
+	public double getScale() {
+		return scale;
+	}
+
+	/**
+	 * Set scale of edge.
+	 * @param sca new edge scale
+	 */
+	public void setScale(double sca) {
+		scale = sca;
 	}
 
 	/**
