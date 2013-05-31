@@ -137,14 +137,9 @@ public class SocialNetwork {
 		// Make vertex color depend on category
 		vv.getRenderContext().setVertexFillPaintTransformer(
 			new VertexCategoryPainter());
-		// Color edges gray to more easily see vertex labels
+		// Make edge color depend on category
 		vv.getRenderContext().setEdgeDrawPaintTransformer(
-			new Transformer<Edge,Paint>() {
-				@Override
-				public Paint transform(Edge s) {
-					return Color.GRAY;
-				}
-			});
+			new EdgeCategoryPainter());
 		
 		// Use default interactive mouse behavior
 		DefaultModalGraphMouse<Node, Edge> gm = 
@@ -231,7 +226,7 @@ public class SocialNetwork {
 
 	private static class VertexCategoryPainter
 			implements Transformer<Node,Paint> {
-		private static final Color DEFAULT_COLOR = Color.RED;
+		private static final Color DEFAULT_COLOR = Color.GREEN;
 		private static final float TARGET_RGB_SUM = 1;
 		private Map<Integer,Color> colorMap;
 		private Random prng;
@@ -243,6 +238,38 @@ public class SocialNetwork {
 
 		@Override
 		public Paint transform(Node s){
+			if (s.getCategory() == null) {
+				return DEFAULT_COLOR;
+			} else if (colorMap.containsKey(s.getCategory())) {
+				return colorMap.get(s.getCategory());
+			} else {
+				float r = prng.nextFloat();
+				float g = Math.max(0, TARGET_RGB_SUM - r) * prng.nextFloat();
+				float b = TARGET_RGB_SUM - r - g;
+				Color color = new Color(r, g, b);
+				colorMap.put(s.getCategory(), color);
+				return color;
+			}
+		}
+	}
+
+	private static class EdgeCategoryPainter
+			implements Transformer<Edge,Paint> {
+		private static final Color DEFAULT_COLOR = Color.GRAY;
+		private static final float TARGET_RGB_SUM = 1;
+		private Map<Integer,Color> colorMap;
+		private Random prng;
+
+		public EdgeCategoryPainter() {
+			colorMap = new HashMap<Integer,Color>();
+			colorMap.put(0, Color.GRAY);
+			colorMap.put(1, Color.RED);
+			colorMap.put(2, Color.BLUE);
+			prng = new Random((int) new Date().getTime());
+		}
+
+		@Override
+		public Paint transform(Edge s){
 			if (s.getCategory() == null) {
 				return DEFAULT_COLOR;
 			} else if (colorMap.containsKey(s.getCategory())) {
