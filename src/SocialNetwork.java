@@ -60,7 +60,7 @@ public class SocialNetwork {
 					&& !from.getName().contains("retweet")
 					&& !to.getName().contains("retweet")) {
 				Edge edge = new Edge(from, to);
-				edge.setScale(count);
+				edge.setScale(Math.sqrt((double) count));
 				add(edge);
 			}
 		}
