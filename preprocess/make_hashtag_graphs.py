@@ -8,10 +8,50 @@ import re
 
 WHITESPACE_RE = re.compile(r'\s+')
 NON_WORD_RE = re.compile(r'([^\w]|_)+')
+RETWEET_RE = re.compile(r'\brt\s*@', re.I)
 BAD_WORD_TEMPLATE = '_CENSORED_%d_'
 
 TWEET_PRINT_INTERVAL = 10000
 EDGE_PRINT_INTERVAL = 100000
+
+
+def is_retweet(j):
+    '''
+    >>> is_retweet({'text': ''})
+    False
+    >>> is_retweet({'retweeted_status': {}, 'text': ''})
+    True
+    >>> is_retweet({'text': 'RT @foo hello world'})
+    True
+    >>> is_retweet({'text': 'RT@foo hello world'})
+    True
+    >>> is_retweet({'retweeted_status': {}, 'text': 'RT @foo hello world'})
+    True
+    >>> is_retweet({'retweeted_status': {}, 'text': 'RT@foo hello world'})
+    True
+    >>> is_retweet({'text': 'hi! RT@foo hello world'})
+    True
+    >>> is_retweet({'text': 'hi! RT @foo hello world'})
+    True
+    >>> is_retweet({'text': 'hi! "RT@foo hello world"'})
+    True
+    >>> is_retweet({'text': 'hi! "RT @foo hello world"'})
+    True
+    >>> is_retweet({'text': 'rt @foo hello world'})
+    True
+    >>> is_retweet({'text': 'rt@foo hello world'})
+    True
+    >>> is_retweet({'text': 'hi! rt@foo hello world'})
+    True
+    >>> is_retweet({'text': 'hi! rt @foo hello world'})
+    True
+    >>> is_retweet({'text': 'hi! "rt@foo hello world"'})
+    True
+    >>> is_retweet({'text': 'hi! "rt @foo hello world"'})
+    True
+    '''
+    text = j['text']
+    return ('retweeted_status' in j) or (RETWEET_RE.search(text) is not None)
 
 
 class Tweet(object):
@@ -103,7 +143,8 @@ def tweet_generator(profanity_filename, *tweet_filenames):
                     print 'Loading tweet %d...' % i
                 j = json.loads(line)
                 if 'user' in j:
-                    yield Tweet(name_cleaner, j)
+                    if not is_retweet(j):
+                        yield Tweet(name_cleaner, j)
                 i += 1
         print 'Loaded %d tweets from %s' % (i, tweet_filename)
 
