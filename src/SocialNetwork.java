@@ -49,15 +49,16 @@ public class SocialNetwork {
 		GraphFileScanner scanner = new GraphFileScanner(file);
 		while (scanner.hasNextLine()) {
 			List<String> line = scanner.nextLine();
-            Node from = new Node(line.get(0));
-            Node to = new Node(line.get(1));
-            int count = Integer.parseInt(line.get(2));
-            if (count > 5
+			Node from = new Node(line.get(0));
+			Node to = new Node(line.get(1));
+			int count = Integer.parseInt(line.get(2));
+			if (count > 5
 					&& !from.getName().contains("follow")
 					&& !to.getName().contains("follow")
 					&& !from.getName().contains("retweet")
-					&& !to.getName().contains("retweet"))
-                add(new Edge(from, to));
+					&& !to.getName().contains("retweet")) {
+				add(new Edge(from, to));
+			}
 		}
 
 		int maxDegree = 0;
