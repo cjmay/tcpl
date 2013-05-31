@@ -57,7 +57,9 @@ public class SocialNetwork {
 					&& !to.getName().contains("follow")
 					&& !from.getName().contains("retweet")
 					&& !to.getName().contains("retweet")) {
-				add(new Edge(from, to));
+				Edge edge = new Edge(from, to);
+				edge.setWeight(count);
+				add(edge);
 			}
 		}
 
