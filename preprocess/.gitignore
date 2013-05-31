@@ -5,3 +5,4 @@
 *.graph.[0-9].gz
 *.json
 *.json.[0-9]
+profanity.txt
