@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.BasicStroke;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -122,6 +124,14 @@ public class SocialNetwork {
 		// Make vertex color depend on category
 		vv.getRenderContext().setVertexFillPaintTransformer(
 			new VertexCategoryPainter());
+		// Make vertex shape a small circle
+		vv.getRenderContext().setEdgeStrokeTransformer(
+			new Transformer<Edge,Stroke>() {
+				@Override
+				public Stroke transform(Edge s) {
+					return new BasicStroke((float) s.getScale());
+				}
+			});
 		// Make edge color depend on category
 		vv.getRenderContext().setEdgeDrawPaintTransformer(
 			new EdgeCategoryPainter());
