@@ -1,5 +1,6 @@
 public class Edge {
 	private final Node from, to;
+	private Integer category;
 
 	/**
 	 * Create a new edge from one node to another.
@@ -23,6 +24,21 @@ public class Edge {
 	 */
 	public Node getTo() {
 		return to;
+	}
+
+	/**
+	 * Return category of edge.
+	 */
+	public Integer getCategory() {
+		return category;
+	}
+
+	/**
+	 * Set category of edge.
+	 * @param cat new edge category
+	 */
+	public void setCategory(Integer cat) {
+		category = cat;
 	}
 
 	@Override

@@ -31,4 +31,5 @@ In this relatively simple example there are three nodes: Bob, Alice, and Eve.  T
 Resources
 ---------
 
-JUNG: http://jung.sourceforge.net/
+* JUNG (Java Universal Network/Graph Framework): http://jung.sourceforge.net/
+* Gephi (Popular graph visualization tool): https://gephi.org/
